@@ -107,6 +107,8 @@ namespace StudentExercises_EF.Controllers
             {
                 try
                 {
+                    var user = await GetCurrentUserAsync();
+                    cohort.UserId = user.Id;
                     _context.Update(cohort);
                     await _context.SaveChangesAsync();
                 }
@@ -150,6 +152,8 @@ namespace StudentExercises_EF.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var cohort = await _context.Cohort.FindAsync(id);
+            var user = await GetCurrentUserAsync();
+            cohort.UserId = user.Id;
             _context.Cohort.Remove(cohort);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

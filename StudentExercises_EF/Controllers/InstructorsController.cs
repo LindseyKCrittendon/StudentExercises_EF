@@ -51,6 +51,7 @@ namespace StudentExercises_EF.Controllers
             var instructor = await _context.Instructor
                 .Include(i => i.Cohort)
                 .Include(m => m.Students)
+                
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (instructor == null)
             {
@@ -144,6 +145,8 @@ namespace StudentExercises_EF.Controllers
             {
                 try
                 {
+                    var user = await GetCurrentUserAsync();
+                    instructor.UserId = user.Id;
                     _context.Update(instructor);
                     await _context.SaveChangesAsync();
                 }
@@ -194,7 +197,10 @@ namespace StudentExercises_EF.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            
             var instructor = await _context.Instructor.FindAsync(id);
+            var user = await GetCurrentUserAsync();
+            instructor.UserId = user.Id;
             _context.Instructor.Remove(instructor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
